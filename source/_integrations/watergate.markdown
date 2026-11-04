@@ -12,6 +12,7 @@ With this integration, you can:
 - Monitor water usage
 - Receive information when Sonic shuts off the valve due to potential leak
 - Turn the automatic leak shut-off on or off
+- Play a sound on the device buzzer
 
 ## Prerequisites
 
@@ -108,6 +109,12 @@ The Watergate integration provides the following entities.
   - **Description**: Reboots the Sonic device.
   - **Remarks**: This is a configuration entity. The device is unreachable while it restarts, so entities may briefly become unavailable and recover on their own once the device is back online. The button never retries a reboot on its own.
 
+#### Sirens
+
+- **Buzzer**
+  - **Description**: Plays a sound on the buzzer of the Sonic device. Turning it on starts a sound, turning it off stops the playback.
+  - **Remarks**: The available sounds are the ones the device reports, and the first one is played unless you choose a tone. A sound plays once and then stops, so the siren turns off again on its own. Its state is updated when the device is polled (see [Data updates](#data-updates)), so it can lag behind the real state by up to 2 minutes. Requires a Sonic firmware version that supports the buzzer.
+
 #### Events
 
 - **Auto Shut-Off**
@@ -125,7 +132,7 @@ Thanks to the webhook option, Sonic will provide live telemetry every second whe
 
 ## Known limitations
 
-The integration does not provide the ability to control the device buzzer or change the device's Wi-Fi configuration.
+The integration does not provide the ability to change the device's Wi-Fi configuration.
 
 Sonic firmware 2.11 and older does not report the two flow directions separately. On such a device, the **Water meter negative volume** and **Water meter negative duration** entities stay unavailable, and **Water meter volume** and **Water meter duration** report the difference between the normal and reverse readings rather than the normal direction alone.
 
@@ -188,6 +195,19 @@ These entities need Sonic firmware newer than 2.11. A Sonic connected to the Wat
 1. Connect the Sonic to your network. The device updates itself within 24 hours.
 2. After the update, reload the integration: go to {% my integrations title="**Settings** > **Devices & services**" %}, select **Watergate**, select the three dots {% icon "mdi:dots-vertical" %} menu next to the entry, and select **Reload**. Restarting Home Assistant works too.
 3. If your Sonic had recorded reverse flow, **Water meter volume** and **Water meter duration** rise once after the reload. To remove the spike, refer to [The Energy dashboard shows a one-time spike in water use](#the-energy-dashboard-shows-a-one-time-spike-in-water-use).
+
+### The buzzer siren is missing
+
+#### Symptom: There is no **Buzzer** siren entity
+
+#### Description
+
+The buzzer needs Sonic firmware that supports it. A Sonic connected to the Watergate cloud is kept up to date by Watergate, so it already has this firmware. A Sonic that has been offline may still run an older version.
+
+#### Resolution
+
+1. Connect the Sonic to your network. The device updates itself within 24 hours.
+2. After the update, reload the integration: go to {% my integrations title="**Settings** > **Devices & services**" %}, select **Watergate**, select the three dots {% icon "mdi:dots-vertical" %} menu next to the entry, and select **Reload**. Restarting Home Assistant works too.
 
 ## Removing the integration
 
